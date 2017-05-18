@@ -28,18 +28,7 @@ void addCharacters(std::string &str,
 
 std::string synthesizePassword(const std::string &punctuation, const std::string &numbers, const std::string &alphabet,
                                const std::map<char, char> &replacements, std::default_random_engine &randomEngine,
-                               const std::vector<char> &substitutes, const std::vector<std::string> &dictionary,
-                               bool haveUserInput) {
-    std::string word1, word2;
-    if (haveUserInput) {
-        std::cout << "Please input two keywords.\n";
-        std::cin >> word1 >> word2;
-    } else {
-        word1 = dictionary[randomEngine() % dictionary.size()];
-        word2 = dictionary[randomEngine() % dictionary.size()];
-    }
-    toLower(word1);
-    toLower(word2);
+                               const std::vector<char> &substitutes, std::string &word1, std::string &word2) {
 
     std::string password;
     for (int i = 0; i < std::max(word1.length(), word2.length()); i++) {
@@ -68,21 +57,8 @@ std::string synthesizePassword(const std::string &punctuation, const std::string
 std::string
 lengthSubstitutePassword(const std::string &punctuation, const std::string &numbers, const std::string &alphabet,
                          const std::map<char, char> &replacements, std::default_random_engine &randomEngine,
-                         const std::vector<std::string> &dictionary, bool haveUserInput) {
-    int length;
-    std::string word;
-    if (haveUserInput) {
-        std::cout << "Provide a desired length for the password." << std::endl;
-        std::cin >> length;
+                         int length, std::string &word) {
 
-        std::cout << "Input a word to be used as a base." << std::endl;
-        std::cin >> word;
-    } else {
-        length = (int) (randomEngine() % 8 + 8);
-
-        word = dictionary[randomEngine() % dictionary.size()];
-    }
-    toLower(word);
 
     if (word.length() > length) {
         while (word.length() != length) {
@@ -150,23 +126,10 @@ void toLower(std::string &str) {
 }
 
 void
-makePassword(const std::vector<std::string> &dictionary, bool haveUserInput, std::default_random_engine &randomEngine) {
+makePassword(const std::vector<std::string> &dictionary, bool haveUserInput, std::default_random_engine &randomEngine,
+             const std::string &punctuation, const std::string &numbers, const std::string &alphabet,
+             const std::vector<char> &substitutes, const std::map<char, char> &replacements) {
 
-
-    std::string punctuation = "_-+=.,!@#$%^&*";
-    std::string numbers = "0123456789";
-    std::string alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" + numbers + punctuation;
-
-    std::vector<char> substitutes = strToCharacterVector(alphabet);
-
-    std::map<char, char> replacements;
-
-    replacements['e'] = '3';
-    replacements['s'] = '$';
-    replacements['o'] = '0';
-    replacements['l'] = '1';
-    replacements['i'] = '!';
-    replacements['a'] = '@';
 
     std::string password;
 
@@ -186,11 +149,34 @@ makePassword(const std::vector<std::string> &dictionary, bool haveUserInput, std
     }
 
     if (passwordGenerator == 1) {
+        std::string word1, word2;
+        if (haveUserInput) {
+            std::cout << "Please input two keywords.\n";
+            std::cin >> word1 >> word2;
+        } else {
+            word1 = dictionary[randomEngine() % dictionary.size()];
+            word2 = dictionary[randomEngine() % dictionary.size()];
+        }
+        toLower(word1);
+        toLower(word2);
         password = synthesizePassword(punctuation, numbers, alphabet, replacements, randomEngine, substitutes,
-                                      dictionary, haveUserInput);
+                                      word1, word2);
     } else if (passwordGenerator == 2) {
-        password = lengthSubstitutePassword(punctuation, numbers, alphabet, replacements, randomEngine, dictionary,
-                                            haveUserInput);
+        int length;
+        std::string word;
+        if (haveUserInput) {
+            std::cout << "Provide a desired length for the password." << std::endl;
+            std::cin >> length;
+
+            std::cout << "Input a word to be used as a base." << std::endl;
+            std::cin >> word;
+        } else {
+            length = (int) (randomEngine() % 8 + 8);
+
+            word = dictionary[randomEngine() % dictionary.size()];
+        }
+        toLower(word);
+        password = lengthSubstitutePassword(punctuation, numbers, alphabet, replacements, randomEngine, length, word);
     }
 
     if (haveUserInput)
