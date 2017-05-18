@@ -21,7 +21,7 @@ void addLetterToPassword(const std::string &word, int index, std::string &passwo
 }
 
 void addCharacters(std::string &str,
-                   std::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>::iterator pos,
+                   std::string::iterator pos,
                    char &character) {
     str.insert(pos, character);
 }
@@ -78,7 +78,7 @@ lengthSubstitutePassword(const std::string &punctuation, const std::string &numb
         std::cout << "Input a word to be used as a base." << std::endl;
         std::cin >> word;
     } else {
-        length = randomEngine() % 8 + 8;
+        length = (int) (randomEngine() % 8 + 8);
 
         word = dictionary[randomEngine() % dictionary.size()];
     }

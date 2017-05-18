@@ -17,7 +17,7 @@ void addLetterToPassword(const std::string &word, int index, std::string &passwo
                          const std::vector<char> &alphabet, std::default_random_engine &randomEngine);
 
 void addCharacters(std::string &str,
-                   std::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char>>::iterator pos,
+                   std::string::iterator pos,
                    char &character);
 
 std::string synthesizePassword(const std::string &punctuation, const std::string &numbers, const std::string &alphabet,
